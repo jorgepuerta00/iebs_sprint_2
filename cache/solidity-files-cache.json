@@ -1,0 +1,112 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/LoanPlatform.sol": {
+      "lastModificationDate": 1697485629237,
+      "contentHash": "6915ad0461c180a62d2358107099f585",
+      "sourceName": "contracts/LoanPlatform.sol",
+      "solcConfig": {
+        "version": "0.8.1",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.1"
+      ],
+      "artifacts": [
+        "ISiliquaCoin",
+        "LoanPlatform"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1697485571139,
+      "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.1",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/SiliquaCoin.sol": {
+      "lastModificationDate": 1697485627079,
+      "contentHash": "f187dbafe3a12b4a0af310d5b2400bf1",
+      "sourceName": "contracts/SiliquaCoin.sol",
+      "solcConfig": {
+        "version": "0.8.1",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.1"
+      ],
+      "artifacts": [
+        "IERC20",
+        "SiliquaCoin"
+      ]
+    }
+  }
+}

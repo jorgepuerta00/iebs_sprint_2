@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.1;
 
-import "hardhat/console.sol";
-
 // Interfaz del estándar ERC-20
 interface IERC20 {
     // Función para transferir tokens a otra dirección
