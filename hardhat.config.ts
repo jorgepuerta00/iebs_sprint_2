@@ -11,6 +11,7 @@ const chainIds = {
   eth_goerli_id: 5,
   eth_sepolia_id: 11155111,
   eth_ganache_id: 1337,
+  polygon_mumbai_id: 80001,
 };
 
 const {
@@ -18,7 +19,7 @@ const {
   ETH_GOERLI_TESTNET_RPC,
   ETH_SCAN_API_KEY,
   ETH_SEPOLIA_TESTNET_RPC,
-  ETH_GANACHE_TESTNET_RPC,
+  LOCALHOST_GANACHE_TESTNET_RPC,
   GANACHE_SIGNER_PRIVATE_KEY
 } = process.env;
 
@@ -34,25 +35,19 @@ const config: HardhatUserConfig = {
   },
   networks: {
     localhost: {
-      url: ETH_GANACHE_TESTNET_RPC,
+      url: LOCALHOST_GANACHE_TESTNET_RPC,
       chainId: chainIds.eth_ganache_id,
       accounts: GANACHE_SIGNER_PRIVATE_KEY !== undefined ? [GANACHE_SIGNER_PRIVATE_KEY] : [],
-      gas: 2000000,
-      gasPrice: 20000000000,
     },
     goerli: {
       url: ETH_GOERLI_TESTNET_RPC,
       chainId: chainIds.eth_goerli_id,
       accounts: SIGNER_PRIVATE_KEY !== undefined ? [SIGNER_PRIVATE_KEY] : [],
-      gas: 70000,
-      gasPrice: 500000000,
     },
     sepolia: {
       url: ETH_SEPOLIA_TESTNET_RPC,
       chainId: chainIds.eth_sepolia_id,
       accounts: SIGNER_PRIVATE_KEY !== undefined ? [SIGNER_PRIVATE_KEY] : [],
-      gas: 70000,
-      gasPrice: 500000000,
     },
   },
   etherscan: {
