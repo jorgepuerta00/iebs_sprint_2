@@ -1,58 +1,43 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.1;
 
-// Interfaz del estándar ERC-20
 interface IERC20 {
-    // Función para transferir tokens a otra dirección
     function transfer(address to, uint256 amount) external returns (bool);
 
-    // Función para transferir tokens desde una dirección a otra con el permiso del propietario
     function transferFrom(
         address from,
         address to,
         uint256 amount
     ) external returns (bool);
 
-    // Función para consultar el saldo de tokens en una dirección específica
     function balanceOf(address account) external view returns (uint256);
 
-    // Función para permitir a una dirección gastar una cantidad específica de tokens desde el propietario
     function approve(address spender, uint256 amount) external returns (bool);
 
-    // Función para consultar la asignación permitida de un propietario a un gastador
     function allowance(
         address owner,
         address spender
     ) external view returns (uint256);
 
-    // Evento emitido cuando se aprueba el gasto de tokens desde una dirección
     event Approval(
         address indexed owner,
         address indexed spender,
         uint256 value
     );
 
-    // Evento emitido cuando se transfieren tokens desde una dirección a otra
     event Transfer(address indexed from, address indexed to, uint256 value);
 }
 
-// Implementación del contrato ERC-20
 contract SiliquaCoin is IERC20 {
-    // Mapeo de saldos de tokens por dirección
-    mapping(address => uint256) private balances;
-
-    // Mapeo de asignaciones de gastos permitidos por dirección del propietario
-    mapping(address => mapping(address => uint256)) private allowances;
-
-    // Suministro total de tokens
-    uint256 public totalSupply;
-
-    // Nombre, símbolo y decimales del token
+    address public owner;
     string public name;
     string public symbol;
     uint8 public decimals;
+    uint256 public totalSupply;
 
-    // Constructor del contrato ERC-20
+    mapping(address => uint256) private balances;
+    mapping(address => mapping(address => uint256)) private allowances;
+
     constructor(
         string memory _name,
         string memory _symbol,
@@ -63,71 +48,77 @@ contract SiliquaCoin is IERC20 {
         symbol = _symbol;
         decimals = _decimals;
         totalSupply = initialSupply;
-        // Asigna todo el suministro inicial al creador del contrato
         balances[msg.sender] = initialSupply;
+        owner = msg.sender;
     }
 
-    // Función para consultar el saldo de tokens en una dirección específica
     function balanceOf(
         address account
     ) external view override returns (uint256) {
         return balances[account];
     }
 
-    // Función para transferir tokens a otra dirección
     function transfer(
         address to,
         uint256 amount
     ) external override returns (bool) {
-        // Verifica si el remitente tiene suficientes tokens para la transferencia
         require(amount <= balances[msg.sender], "Insufficient balance");
-        // Actualiza los saldos del remitente y el destinatario
         balances[msg.sender] -= amount;
         balances[to] += amount;
-        // Emite un evento Transfer para registrar la transferencia de tokens
         emit Transfer(msg.sender, to, amount);
         return true;
     }
 
-    // Función para transferir tokens desde una dirección a otra con el permiso del propietario
     function transferFrom(
         address from,
         address to,
         uint256 amount
     ) external override returns (bool) {
-        // Verifica si el remitente tiene suficientes tokens para la transferencia
         require(amount <= balances[from], "Insufficient balance");
-        // Verifica si el remitente tiene suficiente asignación permitida para gastar los tokens
         require(
             amount <= allowances[from][msg.sender],
             "Insufficient allowance"
         );
-        // Actualiza los saldos del remitente y el destinatario, y reduce la asignación permitida
         balances[from] -= amount;
         balances[to] += amount;
         allowances[from][msg.sender] -= amount;
-        // Emite un evento Transfer para registrar la transferencia de tokens
         emit Transfer(from, to, amount);
         return true;
     }
 
-    // Función para permitir a una dirección gastar una cantidad específica de tokens desde el propietario
     function approve(
         address spender,
         uint256 amount
     ) external override returns (bool) {
-        // Establece la asignación permitida para el gastador
         allowances[msg.sender][spender] = amount;
-        // Emite un evento Approval para registrar la aprobación de asignación
         emit Approval(msg.sender, spender, amount);
         return true;
     }
 
-    // Función para consultar la asignación permitida de un propietario a un gastador
     function allowance(
-        address owner,
+        address tokenOwner,
         address spender
     ) external view override returns (uint256) {
-        return allowances[owner][spender];
+        return allowances[tokenOwner][spender];
+    }
+
+    function burn(uint256 amount) external returns (bool) {
+        require(msg.sender == owner, "Only the owner can mint new tokens");
+        require(amount > 0, "Invalid amount");
+        require(amount <= balances[msg.sender], "Insufficient balance");
+
+        balances[msg.sender] -= amount;
+        totalSupply -= amount;
+        emit Transfer(msg.sender, address(0), amount);
+        return true;
+    }
+
+    function mint(address to, uint256 amount) external returns (bool) {
+        require(msg.sender == owner, "Only the owner can mint new tokens");
+
+        totalSupply += amount;
+        balances[to] += amount;
+        emit Transfer(address(0), to, amount); 
+        return true;
     }
 }

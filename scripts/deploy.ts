@@ -19,7 +19,7 @@ async function main() {
 
   // Desplegamos el contrato LoanPlatform, pasando la dirección del token como argumento al constructor
   console.log('Desplegando LoanPlatform...');
-  const loanPlatform = await LoanPlatform.deploy(token.address);
+  const loanPlatform = await LoanPlatform.deploy(token.address, 10);
   await loanPlatform.deployed();
   console.log('LoanPlatform desplegado en:', loanPlatform.address);
 

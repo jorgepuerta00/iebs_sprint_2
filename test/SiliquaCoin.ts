@@ -9,9 +9,10 @@ describe('SiliquaCoin', () => {
   let owner: Signer;
   let addr1: Signer;
   let addr2: Signer;
+  let addr3: Signer;
 
   beforeEach(async () => {
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1, addr2, addr3] = await ethers.getSigners();
     SiliquaCoin = await ethers.getContractFactory('SiliquaCoin');
     siliquaCoin = (await SiliquaCoin.deploy('SiliquaCoin', 'SILQ', 18, ethers.utils.parseEther('1000000'))) as SiliquaCoin;
     await siliquaCoin.deployed();
@@ -66,4 +67,51 @@ describe('SiliquaCoin', () => {
       expect(addr2Balance).to.equal(ethers.utils.parseEther('50'));
     });
   });
+
+  describe('TransferFrom', () => {
+    it('Should allow approved spender to transfer tokens from owner', async () => {
+      const amountToTransfer = ethers.utils.parseEther('50');
+
+      // owner transfiere 1000 tokens a addr1 de su cuenta
+      await siliquaCoin.connect(owner).transfer(await addr1.getAddress(), ethers.utils.parseEther('1000'));
+
+      // La dirección addr1 aprueba a addr2 para gastar 50 tokens de su cuenta
+      await siliquaCoin.connect(addr1).approve(await addr2.getAddress(), amountToTransfer);
+
+      // addr2 usa transferFrom para transferir 50 tokens de addr1 a addr3
+      await siliquaCoin.connect(addr2).transferFrom(await addr1.getAddress(), await addr3.getAddress(), amountToTransfer);
+
+      // Verifica que el balance de addr3 es 50
+      const addr3Balance = await siliquaCoin.balanceOf(await addr3.getAddress());
+      expect(addr3Balance).to.equal(amountToTransfer);
+
+      // Verifica que el balance de addr1 se ha reducido correctamente
+      const addr1Balance = await siliquaCoin.balanceOf(await addr1.getAddress());
+      expect(addr1Balance).to.equal(ethers.utils.parseEther('950'));
+
+      // Verifica que la asignación de addr2 ha disminuido correctamente
+      const allowance = await siliquaCoin.allowance(await addr1.getAddress(), await addr2.getAddress());
+      expect(allowance).to.equal(0);
+    });
+
+    it('Should revert if spender tries to transfer more tokens than allowed', async () => {
+      const amountToTransfer = ethers.utils.parseEther('60');
+
+      // owner transfiere 1000 tokens a addr1 de su cuenta
+      await siliquaCoin.connect(owner).transfer(await addr1.getAddress(), ethers.utils.parseEther('1000'));
+
+      // La dirección addr1 aprueba a addr2 para gastar 50 tokens de su cuenta
+      await siliquaCoin.connect(addr1).approve(await addr2.getAddress(), ethers.utils.parseEther('50'));
+
+      // Intenta transferir 60 tokens, debería revertir
+      await expect(
+        siliquaCoin.connect(addr2).transferFrom(await addr1.getAddress(), await addr3.getAddress(), amountToTransfer)
+      ).to.be.revertedWith('Insufficient allowance');
+
+      // Verifica que el balance de addr3 sigue siendo 0
+      const addr3Balance = await siliquaCoin.balanceOf(await addr3.getAddress());
+      expect(addr3Balance).to.equal(0);
+    });
+  });
+
 });
