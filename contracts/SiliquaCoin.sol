@@ -2,11 +2,7 @@
 pragma solidity 0.8.1;
 
 interface IERC20 {
-  function transfer(
-    address from,
-    address to,
-    uint256 amount
-  ) external returns (bool);
+  function transfer(address to, uint256 amount) external returns (bool);
 
   function transferFrom(
     address from,
@@ -57,14 +53,13 @@ contract SiliquaCoin is IERC20 {
   }
 
   function transfer(
-    address from,
     address to,
     uint256 amount
   ) external override returns (bool) {
-    require(balances[from] >= amount, "Insufficient balance");
-    balances[from] -= amount;
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+    balances[msg.sender] -= amount;
     balances[to] += amount;
-    emit Transfer(from, to, amount);
+    emit Transfer(msg.sender, to, amount);
     return true;
   }
 

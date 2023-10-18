@@ -51,7 +51,11 @@ contract LoanPlatform {
     uint256 interest = (_amount * interestRate) / 100;
     uint256 totalAmount = _amount + interest;
 
-    require(token.transferFrom(owner, msg.sender, _amount), "Transfer failed");
+    require(
+      token.transferFrom(owner, address(this), _amount),
+      "TransferFrom failed"
+    );
+    require(token.transfer(msg.sender, _amount), "Transfer failed");
 
     uint256 loanId = uint256(
       keccak256(abi.encodePacked(msg.sender, block.timestamp, _amount))
@@ -78,9 +82,15 @@ contract LoanPlatform {
       _amount <= loans[msg.sender].totalAmount,
       "Invalid repayment amount"
     );
-    require(token.transfer(msg.sender, owner, _amount), "Transfer failed");
+    require(
+      token.transferFrom(msg.sender, address(this), _amount),
+      "TransferFrom failed"
+    );
+    require(token.transfer(owner, _amount), "Transfer failed");
 
-    loans[msg.sender].amount -= _amount;
+    if (loans[msg.sender].amount != 0) {
+      loans[msg.sender].amount -= _amount;
+    }
     loans[msg.sender].repaidAmount += _amount;
     loans[msg.sender].totalAmount -= _amount;
 

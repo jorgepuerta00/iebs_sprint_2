@@ -33,11 +33,11 @@ describe('SiliquaCoin', () => {
 
   describe('Transactions', () => {
     it('Should transfer tokens between accounts', async () => {
-      await siliquaCoin.transfer(await owner.getAddress(), await addr1.getAddress(), ethers.utils.parseEther('100'));
+      await siliquaCoin.transfer(await addr1.getAddress(), ethers.utils.parseEther('100'));
       const addr1Balance = await siliquaCoin.balanceOf(await addr1.getAddress());
       expect(addr1Balance).to.equal(ethers.utils.parseEther('100'));
 
-      await siliquaCoin.connect(addr1).transfer(await owner.getAddress(), await addr2.getAddress(), ethers.utils.parseEther('50'));
+      await siliquaCoin.connect(addr1).transfer(await addr2.getAddress(), ethers.utils.parseEther('50'));
       const addr2Balance = await siliquaCoin.balanceOf(await addr2.getAddress());
       expect(addr2Balance).to.equal(ethers.utils.parseEther('50'));
     });
@@ -45,7 +45,7 @@ describe('SiliquaCoin', () => {
     it('Should fail if sender doesn’t have enough tokens', async () => {
       const initialOwnerBalance = await siliquaCoin.balanceOf(await owner.getAddress());
       await expect(
-        siliquaCoin.connect(addr1).transfer(await addr1.getAddress(), await owner.getAddress(), ethers.utils.parseEther('1'))
+        siliquaCoin.connect(addr1).transfer(await owner.getAddress(), ethers.utils.parseEther('1'))
       ).to.be.revertedWith('Insufficient balance');
 
       expect(await siliquaCoin.balanceOf(await owner.getAddress())).to.equal(initialOwnerBalance);
@@ -54,8 +54,8 @@ describe('SiliquaCoin', () => {
     it('Should update balances after transfers', async () => {
       const initialOwnerBalance = await siliquaCoin.balanceOf(await owner.getAddress());
 
-      await siliquaCoin.transfer(await owner.getAddress(), await addr1.getAddress(), ethers.utils.parseEther('100'));
-      await siliquaCoin.transfer(await owner.getAddress(), await addr2.getAddress(), ethers.utils.parseEther('50'));
+      await siliquaCoin.transfer(await addr1.getAddress(), ethers.utils.parseEther('100'));
+      await siliquaCoin.transfer(await addr2.getAddress(), ethers.utils.parseEther('50'));
 
       const finalOwnerBalance = await siliquaCoin.balanceOf(await owner.getAddress());
       expect(finalOwnerBalance).to.equal(initialOwnerBalance.sub(ethers.utils.parseEther('150')));
@@ -73,7 +73,7 @@ describe('SiliquaCoin', () => {
       const amountToTransfer = ethers.utils.parseEther('50');
 
       // owner transfiere 1000 tokens a addr1 de su cuenta
-      await siliquaCoin.connect(owner).transfer(await owner.getAddress(), await addr1.getAddress(), ethers.utils.parseEther('1000'));
+      await siliquaCoin.connect(owner).transfer(await addr1.getAddress(), ethers.utils.parseEther('1000'));
 
       // La dirección addr1 aprueba a addr2 para gastar 50 tokens de su cuenta
       await siliquaCoin.connect(addr1).approve(await addr2.getAddress(), amountToTransfer);
@@ -98,7 +98,7 @@ describe('SiliquaCoin', () => {
       const amountToTransfer = ethers.utils.parseEther('60');
 
       // owner transfiere 1000 tokens a addr1 de su cuenta
-      await siliquaCoin.connect(owner).transfer(await owner.getAddress(), await addr1.getAddress(), ethers.utils.parseEther('1000'));
+      await siliquaCoin.connect(owner).transfer(await addr1.getAddress(), ethers.utils.parseEther('1000'));
 
       // La dirección addr1 aprueba a addr2 para gastar 50 tokens de su cuenta
       await siliquaCoin.connect(addr1).approve(await addr2.getAddress(), ethers.utils.parseEther('50'));
