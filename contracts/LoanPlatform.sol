@@ -74,16 +74,14 @@ contract LoanPlatform {
 
   function repayLoan(uint256 _loanId, uint256 _amount) external {
     require(loans[_loanId].active, "No active loan");
-    require(
-      _amount <= loans[_loanId].totalAmount - loans[_loanId].repaidAmount,
-      "Invalid repayment amount"
-    );
+    require(_amount <= loans[_loanId].totalAmount, "Invalid repayment amount");
+    require(token.transfer(msg.sender, owner, _amount), "Transfer failed");
 
-    require(token.transfer(msg.sender, _amount), "Transfer failed");
-
+    loans[_loanId].amount -= _amount;
     loans[_loanId].repaidAmount += _amount;
+    loans[_loanId].totalAmount -= _amount;
 
-    if (loans[_loanId].repaidAmount >= loans[_loanId].totalAmount) {
+    if (loans[_loanId].totalAmount == 0) {
       loans[_loanId].active = false;
       emit LoanRepaid(
         loans[_loanId].borrower,

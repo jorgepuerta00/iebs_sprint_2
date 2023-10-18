@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/LoanPlatform.sol": {
-      "lastModificationDate": 1697549766933,
-      "contentHash": "f25cad3a20f52d1b8952514057d0a9cc",
+      "lastModificationDate": 1697662309057,
+      "contentHash": "0b3785f949ae29bff5565f22996aeb21",
       "sourceName": "contracts/LoanPlatform.sol",
       "solcConfig": {
         "version": "0.8.1",
@@ -74,8 +74,8 @@
       ]
     },
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/SiliquaCoin.sol": {
-      "lastModificationDate": 1697530908625,
-      "contentHash": "2bc5fbfa4dc8f67e90d7395f5adf7ba7",
+      "lastModificationDate": 1697660601721,
+      "contentHash": "d9074d9b6414c0bff9428c5b7cc841fb",
       "sourceName": "contracts/SiliquaCoin.sol",
       "solcConfig": {
         "version": "0.8.1",

@@ -43,7 +43,7 @@ describe('LoanPlatform', () => {
 
   it('should allow users to request a loan', async () => {
     // Transfer 1000 tokens to the user1 account
-    await token.connect(owner).transfer(user1.address, ethers.utils.parseEther('1000'));
+    await token.connect(owner).transfer(owner.address, user1.address, ethers.utils.parseEther('1000'));
     // Approve the user2 account to transfer 100 tokens from the user1 account
     await token.connect(user1).approve(loanPlatform.address, ethers.utils.parseEther('100'));
 
@@ -54,7 +54,7 @@ describe('LoanPlatform', () => {
     await loanPlatform.connect(user2).requestLoan(loanAmount);
 
     // Check that the loan has been created successfully
-    const loan = await loanPlatform.loans('0');
+    const loan = await loanPlatform.loans(0);
     expect(initialBalance).to.equal(0);
     expect(loan.borrower).to.equal(user2.address);
     expect(loan.amount).to.equal(loanAmount);
@@ -68,35 +68,49 @@ describe('LoanPlatform', () => {
 
   it('should allow users to pay a loan', async () => {
     // Transfer 1000 tokens to the user1 account
-    await token.connect(owner).transfer(user1.address, ethers.utils.parseEther('1000'));
+    await token.connect(owner).transfer(owner.address, user1.address, ethers.utils.parseEther('1000'));
     // Approve the user2 account to transfer 100 tokens from the user1 account
     await token.connect(user1).approve(loanPlatform.address, ethers.utils.parseEther('100'));
 
     const loanAmount = ethers.utils.parseEther('100');
 
+    // initial balance of user2 is 0
+    const initialBalance = await token.balanceOf(user2.address);
+    expect(initialBalance).to.equal(0);
+
     // Request a loan of 100 tokens with an interest of 10 tokens
     await loanPlatform.connect(user2).requestLoan(loanAmount);
 
-    const finalBalance = await token.balanceOf(user2.address);
+    // Check that the tokens have been transferred to the contract
+    var finalBalance = await token.balanceOf(user2.address);
     expect(finalBalance).to.equal(loanAmount);
 
-    // Check that the loan has been reduced correctly
-    const loan = await loanPlatform.loans('0');
+    // Check that the loan has been created successfully
+    var loan = await loanPlatform.loans(0);
     expect(loan.amount).to.equal(ethers.utils.parseEther('100'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('0'));
+    expect(loan.totalAmount).to.equal(ethers.utils.parseEther('110'));
     expect(loan.active).to.be.true;
 
     // Pay 50 tokens of the loan
     await loanPlatform.connect(user2).repayLoan(0, ethers.utils.parseEther('50'));
+    var loan = await loanPlatform.loans(0);
     expect(loan.amount).to.equal(ethers.utils.parseEther('50'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('50'));
+    expect(loan.totalAmount).to.equal(ethers.utils.parseEther('60'));
     expect(loan.active).to.be.true;
+
+    // Check new balance of user2 is 50
+    var finalBalance = await token.balanceOf(user2.address);
+    expect(finalBalance).to.equal(ethers.utils.parseEther('50'));
 
     // Pay total tokens of the loan
     await loanPlatform.connect(user2).repayLoan(0, ethers.utils.parseEther('50'));
+    var loan = await loanPlatform.loans(0);
     expect(loan.amount).to.equal(ethers.utils.parseEther('0'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('100'));
-    expect(loan.active).to.be.false;
+    expect(loan.totalAmount).to.equal(ethers.utils.parseEther('10'));
+    expect(loan.active).to.be.true;
 
   });
 
