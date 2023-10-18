@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/LoanPlatform.sol": {
-      "lastModificationDate": 1697662309057,
-      "contentHash": "0b3785f949ae29bff5565f22996aeb21",
+      "lastModificationDate": 1697663488477,
+      "contentHash": "74b27d02fc8c1d15b1bf8d7fde54f08b",
       "sourceName": "contracts/LoanPlatform.sol",
       "solcConfig": {
         "version": "0.8.1",

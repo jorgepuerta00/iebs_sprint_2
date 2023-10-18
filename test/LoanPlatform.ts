@@ -54,7 +54,7 @@ describe('LoanPlatform', () => {
     await loanPlatform.connect(user2).requestLoan(loanAmount);
 
     // Check that the loan has been created successfully
-    const loan = await loanPlatform.loans(0);
+    const loan = await loanPlatform.loans(user2.address);
     expect(initialBalance).to.equal(0);
     expect(loan.borrower).to.equal(user2.address);
     expect(loan.amount).to.equal(loanAmount);
@@ -86,15 +86,15 @@ describe('LoanPlatform', () => {
     expect(finalBalance).to.equal(loanAmount);
 
     // Check that the loan has been created successfully
-    var loan = await loanPlatform.loans(0);
+    var loan = await loanPlatform.loans(user2.address);
     expect(loan.amount).to.equal(ethers.utils.parseEther('100'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('0'));
     expect(loan.totalAmount).to.equal(ethers.utils.parseEther('110'));
     expect(loan.active).to.be.true;
 
     // Pay 50 tokens of the loan
-    await loanPlatform.connect(user2).repayLoan(0, ethers.utils.parseEther('50'));
-    var loan = await loanPlatform.loans(0);
+    await loanPlatform.connect(user2).repayLoan(ethers.utils.parseEther('50'));
+    var loan = await loanPlatform.loans(user2.address);
     expect(loan.amount).to.equal(ethers.utils.parseEther('50'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('50'));
     expect(loan.totalAmount).to.equal(ethers.utils.parseEther('60'));
@@ -105,13 +105,12 @@ describe('LoanPlatform', () => {
     expect(finalBalance).to.equal(ethers.utils.parseEther('50'));
 
     // Pay total tokens of the loan
-    await loanPlatform.connect(user2).repayLoan(0, ethers.utils.parseEther('50'));
-    var loan = await loanPlatform.loans(0);
+    await loanPlatform.connect(user2).repayLoan(ethers.utils.parseEther('50'));
+    var loan = await loanPlatform.loans(user2.address);
     expect(loan.amount).to.equal(ethers.utils.parseEther('0'));
     expect(loan.repaidAmount).to.equal(ethers.utils.parseEther('100'));
     expect(loan.totalAmount).to.equal(ethers.utils.parseEther('10'));
     expect(loan.active).to.be.true;
-
   });
 
 });

@@ -19,7 +19,7 @@ contract LoanPlatform {
     bool active;
   }
 
-  mapping(uint256 => Loan) public loans;
+  mapping(address => Loan) public loans;
 
   event LoanCreated(
     address indexed borrower,
@@ -46,7 +46,7 @@ contract LoanPlatform {
   }
 
   function requestLoan(uint256 _amount) external {
-    require(!loans[_amount].active, "Active loan exists");
+    require(!loans[msg.sender].active, "Active loan exists");
 
     uint256 interest = (_amount * interestRate) / 100;
     uint256 totalAmount = _amount + interest;
@@ -57,7 +57,7 @@ contract LoanPlatform {
       keccak256(abi.encodePacked(msg.sender, block.timestamp, _amount))
     );
 
-    loans[totalLoans] = Loan({
+    loans[msg.sender] = Loan({
       loanId: loanId,
       borrower: msg.sender,
       amount: _amount,
@@ -72,21 +72,24 @@ contract LoanPlatform {
     emit LoanCreated(msg.sender, loanId, _amount, totalAmount);
   }
 
-  function repayLoan(uint256 _loanId, uint256 _amount) external {
-    require(loans[_loanId].active, "No active loan");
-    require(_amount <= loans[_loanId].totalAmount, "Invalid repayment amount");
+  function repayLoan(uint256 _amount) external {
+    require(loans[msg.sender].active, "No active loan");
+    require(
+      _amount <= loans[msg.sender].totalAmount,
+      "Invalid repayment amount"
+    );
     require(token.transfer(msg.sender, owner, _amount), "Transfer failed");
 
-    loans[_loanId].amount -= _amount;
-    loans[_loanId].repaidAmount += _amount;
-    loans[_loanId].totalAmount -= _amount;
+    loans[msg.sender].amount -= _amount;
+    loans[msg.sender].repaidAmount += _amount;
+    loans[msg.sender].totalAmount -= _amount;
 
-    if (loans[_loanId].totalAmount == 0) {
-      loans[_loanId].active = false;
+    if (loans[msg.sender].totalAmount == 0) {
+      loans[msg.sender].active = false;
       emit LoanRepaid(
-        loans[_loanId].borrower,
-        _loanId,
-        loans[_loanId].repaidAmount
+        loans[msg.sender].borrower,
+        loans[msg.sender].loanId,
+        loans[msg.sender].repaidAmount
       );
     }
   }

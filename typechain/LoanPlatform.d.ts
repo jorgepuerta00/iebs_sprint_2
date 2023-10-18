@@ -22,9 +22,9 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface LoanPlatformInterface extends ethers.utils.Interface {
   functions: {
     "interestRate()": FunctionFragment;
-    "loans(uint256)": FunctionFragment;
+    "loans(address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "repayLoan(uint256,uint256)": FunctionFragment;
+    "repayLoan(uint256)": FunctionFragment;
     "requestLoan(uint256)": FunctionFragment;
     "setInterestRate(uint256)": FunctionFragment;
     "token()": FunctionFragment;
@@ -35,11 +35,11 @@ interface LoanPlatformInterface extends ethers.utils.Interface {
     functionFragment: "interestRate",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "loans", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "loans", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "repayLoan",
-    values: [BigNumberish, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "requestLoan",
@@ -146,7 +146,7 @@ export class LoanPlatform extends BaseContract {
     interestRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     loans(
-      arg0: BigNumberish,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -171,7 +171,6 @@ export class LoanPlatform extends BaseContract {
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     repayLoan(
-      _loanId: BigNumberish,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -194,7 +193,7 @@ export class LoanPlatform extends BaseContract {
   interestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   loans(
-    arg0: BigNumberish,
+    arg0: string,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, string, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
@@ -211,7 +210,6 @@ export class LoanPlatform extends BaseContract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   repayLoan(
-    _loanId: BigNumberish,
     _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -234,7 +232,7 @@ export class LoanPlatform extends BaseContract {
     interestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     loans(
-      arg0: BigNumberish,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -258,11 +256,7 @@ export class LoanPlatform extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    repayLoan(
-      _loanId: BigNumberish,
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    repayLoan(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     requestLoan(
       _amount: BigNumberish,
@@ -332,12 +326,11 @@ export class LoanPlatform extends BaseContract {
   estimateGas: {
     interestRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    loans(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    loans(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     repayLoan(
-      _loanId: BigNumberish,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -361,14 +354,13 @@ export class LoanPlatform extends BaseContract {
     interestRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     loans(
-      arg0: BigNumberish,
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     repayLoan(
-      _loanId: BigNumberish,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
