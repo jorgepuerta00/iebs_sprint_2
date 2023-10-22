@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.21;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract SiliquaCoin is IERC20, ReentrancyGuard {
+contract SiliquaCoin is IERC20 {
   address public owner;
   string public name;
   string public symbol;
@@ -43,10 +41,10 @@ contract SiliquaCoin is IERC20, ReentrancyGuard {
   function transfer(
     address to,
     uint256 amount
-  ) external override nonReentrant returns (bool) {
+  ) external override returns (bool) {
     require(balances[msg.sender] >= amount, "Insufficient balance");
-    balances[msg.sender] = balances[msg.sender] - amount;
-    balances[to] = balances[to] + amount;
+    balances[msg.sender] -= amount;
+    balances[to] += amount;
     emit Transfer(msg.sender, to, amount);
     return true;
   }
@@ -55,12 +53,12 @@ contract SiliquaCoin is IERC20, ReentrancyGuard {
     address from,
     address to,
     uint256 amount
-  ) external override nonReentrant returns (bool) {
+  ) external override returns (bool) {
     require(amount <= balances[from], "Insufficient balance");
     require(amount <= allowances[from][msg.sender], "Insufficient allowance");
-    balances[from] = balances[from] - amount;
-    balances[to] = balances[to] + amount;
-    allowances[from][msg.sender] = allowances[from][msg.sender] - amount;
+    balances[from] -= amount;
+    balances[to] += amount;
+    allowances[from][msg.sender] -= amount;
     emit Transfer(from, to, amount);
     return true;
   }
@@ -68,7 +66,7 @@ contract SiliquaCoin is IERC20, ReentrancyGuard {
   function approve(
     address spender,
     uint256 amount
-  ) external override nonReentrant returns (bool) {
+  ) external override returns (bool) {
     allowances[msg.sender][spender] = amount;
     emit Approval(msg.sender, spender, amount);
     return true;
@@ -85,22 +83,18 @@ contract SiliquaCoin is IERC20, ReentrancyGuard {
     return balances[account];
   }
 
-  function burn(uint256 amount) external onlyOwner nonReentrant returns (bool) {
+  function burn(uint256 amount) external onlyOwner returns (bool) {
     require(amount > 0, "Invalid amount");
     require(amount <= balances[msg.sender], "Insufficient balance");
-
-    balances[msg.sender] = balances[msg.sender] - amount;
-    totalSupply = totalSupply - amount;
+    balances[msg.sender] -= amount;
+    totalSupply -= amount;
     emit Transfer(msg.sender, address(0), amount);
     return true;
   }
 
-  function mint(
-    address to,
-    uint256 amount
-  ) external onlyOwner nonReentrant returns (bool) {
-    totalSupply = totalSupply + amount;
-    balances[to] = balances[to] + amount;
+  function mint(address to, uint256 amount) external onlyOwner returns (bool) {
+    totalSupply += amount;
+    balances[to] += amount;
     emit Transfer(address(0), to, amount);
     return true;
   }

@@ -78,8 +78,8 @@
       ]
     },
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/SiliquaCoin.sol": {
-      "lastModificationDate": 1697996373788,
-      "contentHash": "49b8be7f7e212d0e2e272cd70b9bfbd3",
+      "lastModificationDate": 1697996499791,
+      "contentHash": "26c8e51a5970827accb6884038b2c8a7",
       "sourceName": "contracts/SiliquaCoin.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -106,9 +106,7 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/security/ReentrancyGuard.sol"
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
       ],
       "versionPragmas": [
         "0.8.21"
