@@ -70,8 +70,8 @@ describe('LoanPlatform', () => {
     await token.connect(owner).transfer(user1.address, ethers.utils.parseEther('1000'));
     // Approve the user2 account to transfer 100 tokens from the user1 account
     await token.connect(user1).approve(loanPlatform.address, ethers.utils.parseEther('1000'));
-    await token.connect(user2).approve(loanPlatform.address, ethers.utils.parseEther('110'));
-    await token.connect(user3).approve(loanPlatform.address, ethers.utils.parseEther('110'));
+    await token.connect(user2).approve(loanPlatform.address, ethers.utils.parseEther('1000'));
+    await token.connect(user3).approve(loanPlatform.address, ethers.utils.parseEther('1000'));
 
     const loanAmount = ethers.utils.parseEther('100');
 

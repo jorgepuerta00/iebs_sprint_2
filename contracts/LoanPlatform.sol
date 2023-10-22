@@ -40,8 +40,12 @@ contract LoanPlatform {
     totalLoans = 0;
   }
 
-  function setInterestRate(uint256 _newInterestRate) external {
-    require(msg.sender == owner, "Only the owner can change the interest rate");
+  modifier onlyOwner() {
+    require(msg.sender == owner, "Only the owner can call this function");
+    _;
+  }
+
+  function setInterestRate(uint256 _newInterestRate) external onlyOwner {
     interestRate = _newInterestRate;
   }
 
@@ -52,10 +56,9 @@ contract LoanPlatform {
     uint256 totalAmount = _amount + interest;
 
     require(
-      token.transferFrom(owner, address(this), _amount),
+      token.transferFrom(owner, msg.sender, _amount),
       "TransferFrom failed"
     );
-    require(token.transfer(msg.sender, _amount), "Transfer failed");
 
     uint256 loanId = uint256(
       keccak256(abi.encodePacked(msg.sender, block.timestamp, _amount))
@@ -83,10 +86,9 @@ contract LoanPlatform {
       "Invalid repayment amount"
     );
     require(
-      token.transferFrom(msg.sender, address(this), _amount),
+      token.transferFrom(msg.sender, owner, _amount),
       "TransferFrom failed"
     );
-    require(token.transfer(owner, _amount), "Transfer failed");
 
     if (loans[msg.sender].amount != 0) {
       loans[msg.sender].amount -= _amount;
