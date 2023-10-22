@@ -2,16 +2,17 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/LoanPlatform.sol": {
-      "lastModificationDate": 1697994013627,
-      "contentHash": "0b7a85edc3e2de5ca69f37db567d3f2f",
+      "lastModificationDate": 1697996347764,
+      "contentHash": "a1dc4850e48b443215c5c67b2b5f8ba1",
       "sourceName": "contracts/LoanPlatform.sol",
       "solcConfig": {
-        "version": "0.8.1",
+        "version": "0.8.21",
         "settings": {
           "optimizer": {
             "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -29,10 +30,13 @@
         }
       },
       "imports": [
-        "./SiliquaCoin.sol"
+        "./SiliquaCoin.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
       ],
       "versionPragmas": [
-        "0.8.1"
+        "0.8.21"
       ],
       "artifacts": [
         "LoanPlatform"
@@ -74,16 +78,96 @@
       ]
     },
     "/Users/jorgepuerta/repos/iebs_sprint_2/contracts/SiliquaCoin.sol": {
-      "lastModificationDate": 1697664931780,
-      "contentHash": "72bb862e95e15dafd063d1daa2a5c460",
+      "lastModificationDate": 1697996373788,
+      "contentHash": "49b8be7f7e212d0e2e272cd70b9bfbd3",
       "sourceName": "contracts/SiliquaCoin.sol",
       "solcConfig": {
-        "version": "0.8.1",
+        "version": "0.8.21",
         "settings": {
           "optimizer": {
             "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "0.8.21"
+      ],
+      "artifacts": [
+        "SiliquaCoin"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+      "lastModificationDate": 1697485568370,
+      "contentHash": "995f86e1e2ba482741534d435d7df269",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../IERC20.sol",
+        "../../../utils/Address.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "SafeERC20"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1697485567972,
+      "contentHash": "5f4c7678e2e69875dbd2ec01d3d288c1",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -102,11 +186,196 @@
       },
       "imports": [],
       "versionPragmas": [
-        "0.8.1"
+        "^0.8.0"
       ],
       "artifacts": [
-        "IERC20",
-        "SiliquaCoin"
+        "IERC20"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol": {
+      "lastModificationDate": 1697485568324,
+      "contentHash": "402cec08d80c01e96ba8d27963975f8d",
+      "sourceName": "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1697485566496,
+      "contentHash": "a8d6f1154bf88980c18dd20fb009967d",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+      "lastModificationDate": 1697485567217,
+      "contentHash": "301fed494a57e27be4323bdff2d054bf",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol",
+        "./extensions/IERC20Metadata.sol",
+        "../../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ERC20"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1697485566646,
+      "contentHash": "a06a83834de6f8eb27f6ed608d030ac2",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/jorgepuerta/repos/iebs_sprint_2/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+      "lastModificationDate": 1697485567988,
+      "contentHash": "5e82817b39b46b54032effefa77b2bd9",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20Metadata"
       ]
     }
   }

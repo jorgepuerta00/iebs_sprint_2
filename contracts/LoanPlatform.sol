@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.1;
+pragma solidity 0.8.21;
 
 import "./SiliquaCoin.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract LoanPlatform {
+  using SafeERC20 for IERC20;
+
   SiliquaCoin public token;
   address public owner;
   uint256 public interestRate;
@@ -55,10 +60,7 @@ contract LoanPlatform {
     uint256 interest = (_amount * interestRate) / 100;
     uint256 totalAmount = _amount + interest;
 
-    require(
-      token.transferFrom(owner, msg.sender, _amount),
-      "TransferFrom failed"
-    );
+    IERC20(token).safeTransferFrom(owner, msg.sender, _amount);
 
     uint256 loanId = uint256(
       keccak256(abi.encodePacked(msg.sender, block.timestamp, _amount))
@@ -85,10 +87,8 @@ contract LoanPlatform {
       _amount <= loans[msg.sender].totalAmount,
       "Invalid repayment amount"
     );
-    require(
-      token.transferFrom(msg.sender, owner, _amount),
-      "TransferFrom failed"
-    );
+
+    IERC20(token).safeTransferFrom(msg.sender, owner, _amount);
 
     if (loans[msg.sender].amount != 0) {
       loans[msg.sender].amount -= _amount;

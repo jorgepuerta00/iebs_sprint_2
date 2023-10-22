@@ -1,38 +1,24 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.1;
+pragma solidity 0.8.21;
 
-interface IERC20 {
-  function transfer(address to, uint256 amount) external returns (bool);
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-  function transferFrom(
-    address from,
-    address to,
-    uint256 amount
-  ) external returns (bool);
-
-  function balanceOf(address account) external view returns (uint256);
-
-  function approve(address spender, uint256 amount) external returns (bool);
-
-  function allowance(
-    address owner,
-    address spender
-  ) external view returns (uint256);
-
-  event Approval(address indexed owner, address indexed spender, uint256 value);
-
-  event Transfer(address indexed from, address indexed to, uint256 value);
-}
-
-contract SiliquaCoin is IERC20 {
+contract SiliquaCoin is IERC20, ReentrancyGuard {
   address public owner;
   string public name;
   string public symbol;
   uint8 public decimals;
-  uint256 public totalSupply;
+  uint256 public override totalSupply;
 
   mapping(address => uint256) private balances;
   mapping(address => mapping(address => uint256)) private allowances;
+
+  event OwnershipTransferred(
+    address indexed previousOwner,
+    address indexed newOwner
+  );
 
   constructor(
     string memory _name,
@@ -46,19 +32,21 @@ contract SiliquaCoin is IERC20 {
     totalSupply = initialSupply;
     balances[msg.sender] = initialSupply;
     owner = msg.sender;
+    emit Transfer(address(0), msg.sender, initialSupply);
   }
 
-  function balanceOf(address account) external view override returns (uint256) {
-    return balances[account];
+  modifier onlyOwner() {
+    require(msg.sender == owner, "Only the owner can call this function");
+    _;
   }
 
   function transfer(
     address to,
     uint256 amount
-  ) external override returns (bool) {
+  ) external override nonReentrant returns (bool) {
     require(balances[msg.sender] >= amount, "Insufficient balance");
-    balances[msg.sender] -= amount;
-    balances[to] += amount;
+    balances[msg.sender] = balances[msg.sender] - amount;
+    balances[to] = balances[to] + amount;
     emit Transfer(msg.sender, to, amount);
     return true;
   }
@@ -67,12 +55,12 @@ contract SiliquaCoin is IERC20 {
     address from,
     address to,
     uint256 amount
-  ) external override returns (bool) {
+  ) external override nonReentrant returns (bool) {
     require(amount <= balances[from], "Insufficient balance");
     require(amount <= allowances[from][msg.sender], "Insufficient allowance");
-    balances[from] -= amount;
-    balances[to] += amount;
-    allowances[from][msg.sender] -= amount;
+    balances[from] = balances[from] - amount;
+    balances[to] = balances[to] + amount;
+    allowances[from][msg.sender] = allowances[from][msg.sender] - amount;
     emit Transfer(from, to, amount);
     return true;
   }
@@ -80,7 +68,7 @@ contract SiliquaCoin is IERC20 {
   function approve(
     address spender,
     uint256 amount
-  ) external override returns (bool) {
+  ) external override nonReentrant returns (bool) {
     allowances[msg.sender][spender] = amount;
     emit Approval(msg.sender, spender, amount);
     return true;
@@ -93,23 +81,33 @@ contract SiliquaCoin is IERC20 {
     return allowances[tokenOwner][spender];
   }
 
-  function burn(uint256 amount) external returns (bool) {
-    require(msg.sender == owner, "Only the owner can mint new tokens");
+  function balanceOf(address account) external view override returns (uint256) {
+    return balances[account];
+  }
+
+  function burn(uint256 amount) external onlyOwner nonReentrant returns (bool) {
     require(amount > 0, "Invalid amount");
     require(amount <= balances[msg.sender], "Insufficient balance");
 
-    balances[msg.sender] -= amount;
-    totalSupply -= amount;
+    balances[msg.sender] = balances[msg.sender] - amount;
+    totalSupply = totalSupply - amount;
     emit Transfer(msg.sender, address(0), amount);
     return true;
   }
 
-  function mint(address to, uint256 amount) external returns (bool) {
-    require(msg.sender == owner, "Only the owner can mint new tokens");
-
-    totalSupply += amount;
-    balances[to] += amount;
+  function mint(
+    address to,
+    uint256 amount
+  ) external onlyOwner nonReentrant returns (bool) {
+    totalSupply = totalSupply + amount;
+    balances[to] = balances[to] + amount;
     emit Transfer(address(0), to, amount);
     return true;
+  }
+
+  function transferOwnership(address newOwner) external onlyOwner {
+    require(newOwner != address(0), "Invalid owner address");
+    emit OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
   }
 }
